@@ -1,0 +1,188 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Carrusel Scape – Externo</title>
+<style>
+  :root{
+    --brand:#ff007f;          /* borde/botones */
+    --hover:#FFF162;          /* hover botones */
+    --radius:12px;
+    --gap:16px;
+    --slide-w:80vw;           /* ancho slide móvil */
+    --slide-w-md:60vw;        /* tablet */
+    --slide-w-lg:40vw;        /* desktop */
+    --height: auto;           /* auto, se ajusta al contenido */
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:#faf7fb;color:#1a1b1e;font-family:system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,"Helvetica Neue",Arial,sans-serif}
+  .wrap{max-width:1200px;margin:0 auto;padding:24px}
+  h1{font-size:clamp(20px,2.4vw,28px);margin:0 0 8px;text-align:center}
+  p.lead{margin:0 0 16px;text-align:center;color:#555}
+
+  /* Carrusel (scroll-snap) */
+  .carousel{
+    display:flex;overflow-x:auto;gap:var(--gap);
+    scroll-snap-type:x mandatory;scroll-behavior:smooth;
+    padding:8px 0;
+  }
+  .slide{
+    flex:0 0 var(--slide-w);
+    scroll-snap-align:center;
+    border-radius:var(--radius);
+    overflow:hidden;
+    background:#fff;
+    box-shadow:0 6px 20px rgba(0,0,0,.07);
+  }
+  @media (min-width:768px){ .slide{ flex-basis: var(--slide-w-md); } }
+  @media (min-width:1024px){ .slide{ flex-basis: var(--slide-w-lg); } }
+
+  .slide a{display:block;line-height:0}
+  .slide img{display:block;width:100%;height:auto}
+
+  /* Controles */
+  .controls{display:flex;gap:12px;justify-content:center;margin-top:8px}
+  .btn{
+    -webkit-appearance:none;appearance:none;
+    background:#fff;border:2px solid var(--brand);color:var(--brand);
+    border-radius:999px;padding:8px 14px;font-weight:700;cursor:pointer;
+  }
+  .btn:hover,.btn:focus{background:var(--hover);outline:none}
+
+  /* Dots */
+  .dots{display:flex;gap:8px;justify-content:center;margin-top:6px}
+  .dot{width:8px;height:8px;border-radius:50%;background:#d5d5d5}
+  .dot[aria-current="true"]{background:var(--brand)}
+
+  /* Ocultar scrollbar móvil (opcional) */
+  @media (max-width:767px){
+    .carousel{scrollbar-width:none}
+    .carousel::-webkit-scrollbar{display:none}
+  }
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <h1>Carrusel externo</h1>
+    <p class="lead">Aloja aquí tus imágenes y enlázalo en WordPress con un iframe.</p>
+
+    <!-- CARRUSEL -->
+    <div id="carousel" class="carousel" role="region" aria-label="Galería Scape">
+      <!-- Cada slide puede llevar <a href> si quieres que sea clicable -->
+      <div class="slide">
+        <a href="https://www.scape.com.au/offers-2" target="_blank" rel="noopener">
+          <img src="https://www.scape.com.au/wp-content/uploads/2025/08/Scape-Student-Accommodation-Australia.png" alt="Slide 1">
+        </a>
+      </div>
+      <div class="slide">
+        <a href="https://headspace.org.au/" target="_blank" rel="noopener">
+          <img src="https://cdn.scape.com.au/cdn-cgi/imagedelivery/TOESH0qEsuV1ljtDfMkhNw/467a27c0-d187-46b1-6b00-3a6c5cb37400/w=1920,h=1280" alt="Headspace">
+        </a>
+      </div>
+      <div class="slide">
+        <a href="https://sonder.com/" target="_blank" rel="noopener">
+          <img src="https://cdn.scape.com.au/cdn-cgi/imagedelivery/TOESH0qEsuV1ljtDfMkhNw/55413417-d1b8-4457-9b24-22274fa3ee00/w=1920,h=1280" alt="Sonder">
+        </a>
+      </div>
+      <div class="slide">
+        <a href="https://www.optus.com.au/" target="_blank" rel="noopener">
+          <img src="https://cdn.scape.com.au/cdn-cgi/imagedelivery/TOESH0qEsuV1ljtDfMkhNw/e5a4d6e3-6ec5-4fc1-48cf-4253e0dc7f00/w=1920,h=1280" alt="Optus">
+        </a>
+      </div>
+      <!-- duplica/edita slides según necesites -->
+    </div>
+
+    <!-- Controles -->
+    <div class="controls">
+      <button type="button" class="btn prev" aria-label="Anterior">‹</button>
+      <button type="button" class="btn next" aria-label="Siguiente">›</button>
+    </div>
+
+    <!-- Dots -->
+    <div class="dots" aria-hidden="true"></div>
+  </div>
+
+  <script>
+    (function(){
+      var root = document.getElementById('carousel');
+      var prev = document.querySelector('.prev');
+      var next = document.querySelector('.next');
+      var dotsWrap = document.querySelector('.dots');
+      if(!root || !prev || !next || !dotsWrap) return;
+
+      var slides = Array.from(root.querySelectorAll('.slide'));
+      var autoplayMs = 4000; // cambia velocidad aquí
+      var timer = null;
+
+      // Dots
+      slides.forEach(function(_,i){
+        var d = document.createElement('span');
+        d.className = 'dot';
+        d.dataset.index = i;
+        dotsWrap.appendChild(d);
+      });
+      var dots = Array.from(dotsWrap.children);
+
+      function visibleIndex(){
+        var left = root.scrollLeft, w = root.clientWidth;
+        var idx = Math.round(left / (w + 0.001)); // aproxima
+        return Math.max(0, Math.min(slides.length-1, idx));
+      }
+      function updateDots(){
+        var i = visibleIndex();
+        dots.forEach(function(dot,idx){
+          dot.setAttribute('aria-current', idx===i ? 'true' : 'false');
+        });
+      }
+      function step(dir){
+        var by = root.clientWidth;
+        root.scrollBy({left: dir*by, behavior:'smooth'});
+      }
+      prev.addEventListener('click', function(){ step(-1); });
+      next.addEventListener('click', function(){ step( 1); });
+      dotsWrap.addEventListener('click', function(e){
+        var t = e.target.closest('.dot');
+        if(!t) return;
+        var i = +t.dataset.index;
+        var by = root.clientWidth * i - root.scrollLeft;
+        root.scrollBy({left: by, behavior:'smooth'});
+      });
+      root.addEventListener('scroll', function(){ updateDots(); throttleHeight(); }, {passive:true});
+
+      // Autoplay con pausas por interacción y pestaña oculta
+      function start(){ if(!timer && autoplayMs>0 && !window.matchMedia('(prefers-reduced-motion: reduce)').matches){ timer = setInterval(function(){
+        if (root.scrollLeft + root.clientWidth >= root.scrollWidth - 1) {
+          root.scrollTo({left:0,behavior:'smooth'});
+        } else { step(1); }
+      }, autoplayMs); } }
+      function stop(){ if(timer){ clearInterval(timer); timer=null; } }
+      start();
+      ['mouseenter','focusin','pointerdown','wheel','touchstart'].forEach(function(ev){
+        root.addEventListener(ev, stop, {passive:true});
+      });
+      ['mouseleave','focusout'].forEach(function(ev){
+        root.addEventListener(ev, start, {passive:true});
+      });
+      document.addEventListener('visibilitychange', function(){ document.hidden ? stop() : start(); });
+
+      // postMessage al padre (WordPress) para auto-altura del iframe
+      var lastH = 0, tId = null;
+      function sendHeight(){
+        var h = document.documentElement.scrollHeight || document.body.scrollHeight;
+        if (h !== lastH) {
+          lastH = h;
+          parent.postMessage(JSON.stringify({type:'CAROUSEL_HEIGHT', height:h}), '*');
+        }
+      }
+      function throttleHeight(){
+        clearTimeout(tId);
+        tId = setTimeout(sendHeight, 50);
+      }
+      window.addEventListener('load', sendHeight);
+      window.addEventListener('resize', sendHeight);
+      setTimeout(sendHeight, 300); // primer ajuste tras fonts/imágenes
+    })();
+  </script>
+</body>
+</html>
