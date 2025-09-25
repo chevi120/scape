@@ -8,11 +8,7 @@
   :root{
     --brand:#ff007f;
     --accent:#FFF162;
-    /* Cambia el fondo de cada tarjeta:
-       - Blanco: #ffffff
-       - Transparente: transparent
-    */
-    --card-bg:#ffffff; /* o: transparent */
+    --card-bg:#ffffff; /* cámbialo a transparent si prefieres fondo transparente */
   }
   *{box-sizing:border-box}
   body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,"Helvetica Neue",Arial,sans-serif;background:#faf7fb;color:#1a1b1e}
@@ -26,31 +22,39 @@
   }
   .track::-webkit-scrollbar{display:none}
 
-  /* Cada logo en un lienzo fijo de 300x300 */
+  /* Lienzo fijo 259x320 */
   .logo-card{
     flex:0 0 auto;
-    width:300px; height:300px;             /* <-- tamaño pedido */
+    width:259px; height:320px;
     scroll-snap-align:center;
-    background:var(--card-bg);              /* <-- blanco o transparente */
+    background:var(--card-bg);
     border-radius:16px;
-    display:flex; align-items:center; justify-content:center;
+    display:flex;align-items:center;justify-content:center;
     box-shadow:0 6px 20px rgba(111,63,141,.12);
     transition:transform .2s ease, box-shadow .2s ease, background-color .2s ease;
+    overflow:hidden; /* importa para el zoom */
   }
   .logo-card:hover{ transform:translateY(-2px); box-shadow:0 10px 26px rgba(111,63,141,.22) }
 
-  /* El logo se ajusta sin deformarse dentro del 300x300 */
+  /* Logo dentro sin deformar */
   .logo-card img{
     width:100%; height:100%;
-    object-fit:contain;                     /* mantiene proporción */
+    object-fit:contain;
     display:block;
-    padding:20px;                           /* respiración interna */
+    padding:20px;
+    transition: transform .25s ease, opacity .2s ease;
+    will-change: transform;
+    transform-origin:center center;
   }
+  /* Efecto hover: agrandar imagen */
+  .logo-card:hover img{ transform: scale(1.08); }
+  /* Accesible al teclado si usas tabindex="0" */
+  .logo-card:focus-within img{ transform: scale(1.08); }
 
   .controls{display:flex;gap:12px;justify-content:center;margin-top:12px}
   .btn{
     -webkit-appearance:none;appearance:none;
-    background:#fff;border:2px solid var(--brand);color:var(--brand);
+    background:#fff;border:2px solid var(--brand);color:#ff007f;
     border-radius:999px;padding:10px 16px;font-weight:800;cursor:pointer;
   }
   .btn:hover,.btn:focus{background:var(--accent);outline:none}
@@ -60,15 +64,15 @@
   <div class="wrap">
     <div class="carousel" aria-label="Carrusel de logotipos">
       <div id="logo-track" class="track">
-        <!-- logos sin enlaces -->
-        <div class="logo-card"><img src="https://cdn.scape.com.au/cdn-cgi/imagedelivery/TOESH0qEsuV1ljtDfMkhNw/467a27c0-d187-46b1-6b00-3a6c5cb37400/w=592,h=320" alt="Headspace"></div>
-        <div class="logo-card"><img src="https://cdn.scape.com.au/cdn-cgi/imagedelivery/TOESH0qEsuV1ljtDfMkhNw/55413417-d1b8-4457-9b24-22274fa3ee00/w=592,h=320" alt="Sonder"></div>
-        <div class="logo-card"><img src="https://cdn.scape.com.au/cdn-cgi/imagedelivery/TOESH0qEsuV1ljtDfMkhNw/e5a4d6e3-6ec5-4fc1-48cf-4253e0dc7f00/w=592,h=320" alt="Optus"></div>
-        <div class="logo-card"><img src="https://cdn.scape.com.au/cdn-cgi/imagedelivery/TOESH0qEsuV1ljtDfMkhNw/baee697c-68b1-428e-03f9-7a82731e2400/w=592,h=320" alt="RMIT"></div>
-        <div class="logo-card"><img src="https://cdn.scape.com.au/cdn-cgi/imagedelivery/TOESH0qEsuV1ljtDfMkhNw/101987f5-6786-4b2f-efb4-b8dccbe6c800/w=592,h=320" alt="Red Bull"></div>
-        <div class="logo-card"><img src="https://cdn.scape.com.au/cdn-cgi/imagedelivery/TOESH0qEsuV1ljtDfMkhNw/2561efed-fbf0-4cea-f135-338fa76e3500/w=592,h=320" alt="Palace Cinemas"></div>
-        <div class="logo-card"><img src="https://cdn.scape.com.au/cdn-cgi/imagedelivery/TOESH0qEsuV1ljtDfMkhNw/9d327c68-53d4-4641-61f1-214fb941c500/w=592,h=320" alt="Hungry Panda"></div>
-        <div class="logo-card"><img src="https://cdn.scape.com.au/cdn-cgi/imagedelivery/TOESH0qEsuV1ljtDfMkhNw/9da7bc1f-ff41-4750-fee2-fa2cccbbde00/w=592,h=320" alt="New Shanghai"></div>
+        <!-- LOGOS SIN ENLACES (agrega tabindex para foco por teclado si quieres) -->
+        <div class="logo-card" tabindex="0"><img src="https://cdn.scape.com.au/cdn-cgi/imagedelivery/TOESH0qEsuV1ljtDfMkhNw/467a27c0-d187-46b1-6b00-3a6c5cb37400/w=592,h=320" alt="Headspace"></div>
+        <div class="logo-card" tabindex="0"><img src="https://cdn.scape.com.au/cdn-cgi/imagedelivery/TOESH0qEsuV1ljtDfMkhNw/55413417-d1b8-4457-9b24-22274fa3ee00/w=592,h=320" alt="Sonder"></div>
+        <div class="logo-card" tabindex="0"><img src="https://cdn.scape.com.au/cdn-cgi/imagedelivery/TOESH0qEsuV1ljtDfMkhNw/e5a4d6e3-6ec5-4fc1-48cf-4253e0dc7f00/w=592,h=320" alt="Optus"></div>
+        <div class="logo-card" tabindex="0"><img src="https://cdn.scape.com.au/cdn-cgi/imagedelivery/TOESH0qEsuV1ljtDfMkhNw/baee697c-68b1-428e-03f9-7a82731e2400/w=592,h=320" alt="RMIT"></div>
+        <div class="logo-card" tabindex="0"><img src="https://cdn.scape.com.au/cdn-cgi/imagedelivery/TOESH0qEsuV1ljtDfMkhNw/101987f5-6786-4b2f-efb4-b8dccbe6c800/w=592,h=320" alt="Red Bull"></div>
+        <div class="logo-card" tabindex="0"><img src="https://cdn.scape.com.au/cdn-cgi/imagedelivery/TOESH0qEsuV1ljtDfMkhNw/2561efed-fbf0-4cea-f135-338fa76e3500/w=592,h=320" alt="Palace Cinemas"></div>
+        <div class="logo-card" tabindex="0"><img src="https://cdn.scape.com.au/cdn-cgi/imagedelivery/TOESH0qEsuV1ljtDfMkhNw/9d327c68-53d4-4641-61f1-214fb941c500/w=592,h=320" alt="Hungry Panda"></div>
+        <div class="logo-card" tabindex="0"><img src="https://cdn.scape.com.au/cdn-cgi/imagedelivery/TOESH0qEsuV1ljtDfMkhNw/9da7bc1f-ff41-4750-fee2-fa2cccbbde00/w=592,h=320" alt="New Shanghai"></div>
       </div>
 
       <div class="controls">
@@ -84,22 +88,39 @@
       var prev=document.querySelector('.prev');
       var next=document.querySelector('.next');
       if(!track||!prev||!next) return;
-      function step(dir){ var by=track.clientWidth; track.scrollBy({left:dir*by,behavior:'smooth'}); }
+
+      function step(dir){
+        var by=track.clientWidth;
+        track.scrollBy({left:dir*by,behavior:'smooth'});
+      }
       prev.addEventListener('click',function(){step(-1)});
       next.addEventListener('click',function(){step(1)});
 
-      var autoplayMs=4000,timer=null;
-      function start(){ if(!timer&&autoplayMs>0&&!window.matchMedia('(prefers-reduced-motion: reduce)').matches){ timer=setInterval(function(){
-        if(track.scrollLeft+track.clientWidth>=track.scrollWidth-1){ track.scrollTo({left:0,behavior:'smooth'}); } else { step(1); }
-      },autoplayMs);} }
+      var autoplayMs=4000, timer=null;
+      function start(){ if(!timer && autoplayMs>0 && !window.matchMedia('(prefers-reduced-motion: reduce)').matches){
+        timer=setInterval(function(){
+          if(track.scrollLeft + track.clientWidth >= track.scrollWidth - 1){
+            track.scrollTo({left:0,behavior:'smooth'});
+          }else{
+            step(1);
+          }
+        }, autoplayMs);
+      } }
       function stop(){ if(timer){clearInterval(timer); timer=null;} }
       start();
-      ['mouseenter','focusin','pointerdown','wheel','touchstart'].forEach(function(ev){ track.addEventListener(ev,stop,{passive:true}); });
-      ['mouseleave','focusout'].forEach(function(ev){ track.addEventListener(ev,start,{passive:true}); });
 
-      // Ajuste de altura para iframes (opcional)
-      var lastH=0,tId=null;
-      function sendHeight(){ var h=document.documentElement.scrollHeight||document.body.scrollHeight; if(h!==lastH){ lastH=h; parent.postMessage(JSON.stringify({type:'CAROUSEL_HEIGHT',height:h}),'*'); } }
+      ['mouseenter','focusin','pointerdown','wheel','touchstart'].forEach(function(ev){
+        track.addEventListener(ev, stop, {passive:true});
+      });
+      ['mouseleave','focusout'].forEach(function(ev){
+        track.addEventListener(ev, start, {passive:true});
+      });
+
+      var lastH=0, tId=null;
+      function sendHeight(){
+        var h=document.documentElement.scrollHeight||document.body.scrollHeight;
+        if(h!==lastH){ lastH=h; parent.postMessage(JSON.stringify({type:'CAROUSEL_HEIGHT',height:h}),'*'); }
+      }
       function throttleHeight(){ clearTimeout(tId); tId=setTimeout(sendHeight,40); }
       window.addEventListener('load',sendHeight);
       window.addEventListener('resize',sendHeight);
@@ -109,5 +130,3 @@
   </script>
 </body>
 </html>
-
-
