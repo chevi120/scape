@@ -8,7 +8,8 @@
   :root{
     --brand:#ff007f;
     --accent:#FFF162;
-    --card-bg:#ffffff; /* cámbialo a transparent si prefieres fondo transparente */
+    /* Fondo de cada tarjeta: #ffffff (blanco) o transparent */
+    --card-bg:#ffffff; /* cámbialo a transparent si quieres */
   }
   *{box-sizing:border-box}
   body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,"Helvetica Neue",Arial,sans-serif;background:#faf7fb;color:#1a1b1e}
@@ -22,34 +23,40 @@
   }
   .track::-webkit-scrollbar{display:none}
 
-  /* Lienzo fijo 259x320 */
+  /* Lienzo fijo 320x240 */
   .logo-card{
     flex:0 0 auto;
-    width:259px; height:320px;
+    width:320px; height:240px;        /* tamaño pedido */
     scroll-snap-align:center;
-    background:var(--card-bg);
+    background:var(--card-bg);         /* blanco o transparente */
     border-radius:16px;
     display:flex;align-items:center;justify-content:center;
     box-shadow:0 6px 20px rgba(111,63,141,.12);
     transition:transform .2s ease, box-shadow .2s ease, background-color .2s ease;
-    overflow:hidden; /* importa para el zoom */
+    overflow:hidden;                   /* importante para el zoom */
   }
   .logo-card:hover{ transform:translateY(-2px); box-shadow:0 10px 26px rgba(111,63,141,.22) }
 
-  /* Logo dentro sin deformar */
+  /* Logo sin deformar dentro del 320x240 */
   .logo-card img{
     width:100%; height:100%;
     object-fit:contain;
     display:block;
     padding:20px;
-    transition: transform .25s ease, opacity .2s ease;
+    transition: transform .28s ease, opacity .2s ease, filter .28s ease;
     will-change: transform;
     transform-origin:center center;
   }
-  /* Efecto hover: agrandar imagen */
-  .logo-card:hover img{ transform: scale(1.08); }
-  /* Accesible al teclado si usas tabindex="0" */
-  .logo-card:focus-within img{ transform: scale(1.08); }
+  /* Zoom más fuerte al hover (15%) + leve realce */
+  .logo-card:hover img{
+    transform: scale(1.15);
+    filter: drop-shadow(0 2px 6px rgba(0,0,0,.15));
+  }
+  /* También con teclado si agregas tabindex="0" en .logo-card */
+  .logo-card:focus-within img{
+    transform: scale(1.15);
+    filter: drop-shadow(0 2px 6px rgba(0,0,0,.15));
+  }
 
   .controls{display:flex;gap:12px;justify-content:center;margin-top:12px}
   .btn{
@@ -64,7 +71,7 @@
   <div class="wrap">
     <div class="carousel" aria-label="Carrusel de logotipos">
       <div id="logo-track" class="track">
-        <!-- LOGOS SIN ENLACES (agrega tabindex para foco por teclado si quieres) -->
+        <!-- LOGOS SIN ENLACES -->
         <div class="logo-card" tabindex="0"><img src="https://cdn.scape.com.au/cdn-cgi/imagedelivery/TOESH0qEsuV1ljtDfMkhNw/467a27c0-d187-46b1-6b00-3a6c5cb37400/w=592,h=320" alt="Headspace"></div>
         <div class="logo-card" tabindex="0"><img src="https://cdn.scape.com.au/cdn-cgi/imagedelivery/TOESH0qEsuV1ljtDfMkhNw/55413417-d1b8-4457-9b24-22274fa3ee00/w=592,h=320" alt="Sonder"></div>
         <div class="logo-card" tabindex="0"><img src="https://cdn.scape.com.au/cdn-cgi/imagedelivery/TOESH0qEsuV1ljtDfMkhNw/e5a4d6e3-6ec5-4fc1-48cf-4253e0dc7f00/w=592,h=320" alt="Optus"></div>
@@ -130,3 +137,4 @@
   </script>
 </body>
 </html>
+
