@@ -7,55 +7,47 @@
 <style>
   :root{
     --brand:#ff007f;
-    --brand-dark:#6f3f8d;
     --accent:#FFF162;
-    --bg:#faf7fb;
-    --card:#ffffff;
+    /* Cambia el fondo de cada tarjeta:
+       - Blanco: #ffffff
+       - Transparente: transparent
+    */
+    --card-bg:#ffffff; /* o: transparent */
   }
   *{box-sizing:border-box}
-  body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,"Helvetica Neue",Arial,sans-serif;background:var(--bg);color:#1a1b1e}
+  body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,"Helvetica Neue",Arial,sans-serif;background:#faf7fb;color:#1a1b1e}
   .wrap{max-width:1200px;margin:0 auto;padding:24px}
 
-  /* Carrusel */
   .carousel{position:relative}
   .track{
     display:flex;gap:16px;overflow-x:auto;padding:8px 0;
     scroll-snap-type:x mandatory;scroll-behavior:smooth;
+    scrollbar-width:none;
   }
-  /* Ocultar scrollbar en TODOS los tamaños */
-  .track{scrollbar-width:none}
   .track::-webkit-scrollbar{display:none}
 
+  /* Cada logo en un lienzo fijo de 300x300 */
   .logo-card{
-    flex:0 0 46%;
+    flex:0 0 auto;
+    width:300px; height:300px;             /* <-- tamaño pedido */
     scroll-snap-align:center;
-    background:var(--card);
+    background:var(--card-bg);              /* <-- blanco o transparente */
     border-radius:16px;
-    padding:18px 20px;
-    box-shadow:0 6px 20px rgba(111,63,141,.15);
-    display:flex;align-items:center;justify-content:center;
+    display:flex; align-items:center; justify-content:center;
+    box-shadow:0 6px 20px rgba(111,63,141,.12);
     transition:transform .2s ease, box-shadow .2s ease, background-color .2s ease;
   }
-  .logo-card:hover{background:var(--accent);transform:translateY(-2px);box-shadow:0 10px 26px rgba(111,63,141,.25)}
+  .logo-card:hover{ transform:translateY(-2px); box-shadow:0 10px 26px rgba(111,63,141,.22) }
 
-  /* Imágenes +30% (84/94/104 px por breakpoint) */
+  /* El logo se ajusta sin deformarse dentro del 300x300 */
   .logo-card img{
-    width:100%;height:84px;object-fit:contain;display:block;
-    filter:grayscale(0);opacity:.98;transition:filter .2s ease, opacity .2s ease;
-  }
-  .logo-card:hover img{filter:none;opacity:1}
-
-  @media (min-width:768px){
-    .logo-card{flex-basis:28%}
-    .logo-card img{height:94px}
-  }
-  @media (min-width:1024px){
-    .logo-card{flex-basis:20%}
-    .logo-card img{height:104px}
+    width:100%; height:100%;
+    object-fit:contain;                     /* mantiene proporción */
+    display:block;
+    padding:20px;                           /* respiración interna */
   }
 
-  /* Controles */
-  .controls{display:flex;gap:12px;justify-content:center;margin-top:10px}
+  .controls{display:flex;gap:12px;justify-content:center;margin-top:12px}
   .btn{
     -webkit-appearance:none;appearance:none;
     background:#fff;border:2px solid var(--brand);color:var(--brand);
@@ -68,7 +60,7 @@
   <div class="wrap">
     <div class="carousel" aria-label="Carrusel de logotipos">
       <div id="logo-track" class="track">
-        <!-- LOGOS SIN ENLACES (no redirigen) -->
+        <!-- logos sin enlaces -->
         <div class="logo-card"><img src="https://cdn.scape.com.au/cdn-cgi/imagedelivery/TOESH0qEsuV1ljtDfMkhNw/467a27c0-d187-46b1-6b00-3a6c5cb37400/w=592,h=320" alt="Headspace"></div>
         <div class="logo-card"><img src="https://cdn.scape.com.au/cdn-cgi/imagedelivery/TOESH0qEsuV1ljtDfMkhNw/55413417-d1b8-4457-9b24-22274fa3ee00/w=592,h=320" alt="Sonder"></div>
         <div class="logo-card"><img src="https://cdn.scape.com.au/cdn-cgi/imagedelivery/TOESH0qEsuV1ljtDfMkhNw/e5a4d6e3-6ec5-4fc1-48cf-4253e0dc7f00/w=592,h=320" alt="Optus"></div>
@@ -87,47 +79,35 @@
   </div>
 
   <script>
-  (function(){
-    var track = document.getElementById('logo-track');
-    var prev = document.querySelector('.prev');
-    var next = document.querySelector('.next');
-    if(!track || !prev || !next) return;
+    (function(){
+      var track=document.getElementById('logo-track');
+      var prev=document.querySelector('.prev');
+      var next=document.querySelector('.next');
+      if(!track||!prev||!next) return;
+      function step(dir){ var by=track.clientWidth; track.scrollBy({left:dir*by,behavior:'smooth'}); }
+      prev.addEventListener('click',function(){step(-1)});
+      next.addEventListener('click',function(){step(1)});
 
-    function step(dir){
-      var by = track.clientWidth;
-      track.scrollBy({ left: dir*by, behavior:'smooth' });
-    }
-    prev.addEventListener('click', function(){ step(-1); });
-    next.addEventListener('click', function(){ step( 1); });
+      var autoplayMs=4000,timer=null;
+      function start(){ if(!timer&&autoplayMs>0&&!window.matchMedia('(prefers-reduced-motion: reduce)').matches){ timer=setInterval(function(){
+        if(track.scrollLeft+track.clientWidth>=track.scrollWidth-1){ track.scrollTo({left:0,behavior:'smooth'}); } else { step(1); }
+      },autoplayMs);} }
+      function stop(){ if(timer){clearInterval(timer); timer=null;} }
+      start();
+      ['mouseenter','focusin','pointerdown','wheel','touchstart'].forEach(function(ev){ track.addEventListener(ev,stop,{passive:true}); });
+      ['mouseleave','focusout'].forEach(function(ev){ track.addEventListener(ev,start,{passive:true}); });
 
-    var autoplayMs = 4000;
-    var timer = null;
-    function start(){ if(!timer && autoplayMs>0 && !window.matchMedia('(prefers-reduced-motion: reduce)').matches){ timer=setInterval(function(){
-      if (track.scrollLeft + track.clientWidth >= track.scrollWidth - 1) {
-        track.scrollTo({ left:0, behavior:'smooth' });
-      } else { step(1); }
-    }, autoplayMs);}}
-    function stop(){ if(timer){clearInterval(timer); timer=null;} }
-    start();
-    ['mouseenter','focusin','pointerdown','wheel','touchstart'].forEach(function(ev){
-      track.addEventListener(ev, stop, {passive:true});
-    });
-    ['mouseleave','focusout'].forEach(function(ev){
-      track.addEventListener(ev, start, {passive:true});
-    });
-
-    var lastH=0, tId=null;
-    function sendHeight(){
-      var h = document.documentElement.scrollHeight || document.body.scrollHeight;
-      if(h!==lastH){ lastH=h; parent.postMessage(JSON.stringify({type:'CAROUSEL_HEIGHT',height:h}), '*'); }
-    }
-    function throttleHeight(){ clearTimeout(tId); tId=setTimeout(sendHeight, 40); }
-    window.addEventListener('load', sendHeight);
-    window.addEventListener('resize', sendHeight);
-    setTimeout(sendHeight, 300);
-    track.addEventListener('scroll', throttleHeight, {passive:true});
-  })();
+      // Ajuste de altura para iframes (opcional)
+      var lastH=0,tId=null;
+      function sendHeight(){ var h=document.documentElement.scrollHeight||document.body.scrollHeight; if(h!==lastH){ lastH=h; parent.postMessage(JSON.stringify({type:'CAROUSEL_HEIGHT',height:h}),'*'); } }
+      function throttleHeight(){ clearTimeout(tId); tId=setTimeout(sendHeight,40); }
+      window.addEventListener('load',sendHeight);
+      window.addEventListener('resize',sendHeight);
+      setTimeout(sendHeight,300);
+      track.addEventListener('scroll',throttleHeight,{passive:true});
+    })();
   </script>
 </body>
 </html>
+
 
