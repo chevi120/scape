@@ -1,0 +1,23 @@
+
+<style>
+:root { --scape-brand: #00C389; --card-radius: 16px; }
+.scape-reviews{ font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif; }
+.scape-reviews__header{ display:flex; align-items:center; justify-content:space-between; gap:12px; margin-bottom:12px; flex-wrap:wrap; }
+.scape-reviews__title{ display:flex; align-items:center; gap:10px; }
+.scape-reviews__dot{ width:10px; height:10px; border-radius:999px; background:var(--scape-brand); display:inline-block; }
+.scape-reviews__meta{ display:flex; align-items:center; gap:8px; color:#222; }
+.scape-reviews__grid{ display:grid; grid-template-columns:repeat(auto-fill,minmax(260px,1fr)); gap:14px; }
+.scape-reviews__card{ border:1px solid #eee; border-radius:var(--card-radius); padding:14px; background:#fff; box-shadow:0 1px 2px rgba(0,0,0,.04); }
+.scape-reviews__head{ display:flex; align-items:center; gap:10px; margin-bottom:8px; }
+.scape-reviews__avatar{ width:32px; height:32px; border-radius:999px; background:var(--scape-brand); color:#fff; display:flex; align-items:center; justify-content:center; font-weight:700; }
+.scape-reviews__author{ font-weight:700; }
+.scape-reviews__time{ color:#6b7280; font-size:12px; }
+.scape-reviews__stars{ margin:6px 0; }
+.scape-reviews__star{ font-size:18px; line-height:1; display:inline-block; color:#d1d5db; }
+.scape-reviews__star.is-full{ color:#fbbf24; }
+.scape-reviews__star.is-half{ color:#f59e0b; }
+.scape-reviews__text{ color:#111827; }
+.scape-reviews__badge{ font-size:11px; color:#4b5563; background:#f3f4f6; border-radius:999px; padding:4px 8px; }
+.scape-reviews__maps{ text-decoration:none; font-weight:600; }
+@media (max-width:480px){ .scape-reviews__grid{ grid-template-columns:1fr; } }
+</style>
